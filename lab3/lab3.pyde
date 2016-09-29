@@ -41,7 +41,6 @@ class l:
         fill(100, 255, 100)
         strokeWeight(0.5)
         ellipse(self._location[0],self._location[1],20,20)
-        print(self._location[0],self._location[1])
     def startFall(self,x,y):
         if math.hypot(self._location[0] - x, self._location[1] - y) <= 20:
             self._fall = True
@@ -75,13 +74,36 @@ def drawTree(start,angle,branchlength,fat,count):
          drawTree(endR,swayleft*(brancht-angle),branchlength-10,fat-5,count+1)
     else:
         if set:
-            print("endL: ", endL)
-            print("endR: ", endR)
             leaves.append(l(endL))
             leaves.append(l(endR))
     if nodes:
          drawNodes(endL)
          drawNodes(endR)
+         
+def s():
+    global swayleft, swayLnumb, swayright, swayRnumb, set, leaves
+    
+    if swayL == None:
+        swayleft += swayLnumb
+        if swayleft>=-0.975 or swayleft<=-1:
+                swayLnumb=swayLnumb*-1
+        swayright += swayRnumb
+        if swayright>=1 or swayright<=0.975:
+                swayRnumb=swayRnumb*-1
+    else:
+        if swayL:
+            swayleft += swayLnumb
+            if swayleft>=-0.975 or swayleft<=-1:
+                swayLnumb=swayLnumb*-1
+        else:
+            swayright += swayRnumb
+            if swayright>=1 or swayright<=0.975:
+                swayRnumb=swayRnumb*-1
+    set=True
+    # make sure it matches draw
+    leaves=[]
+    drawTree((int(screenwidth/2),screenheight-10),0,trunkheight,trunkwidth,0)
+    set=False
 
 def keyPressed():
     global leaf
@@ -122,21 +144,7 @@ def draw():
     # drawLineAngle(0, (int(screenwidth/2),screenheight), 0, 400, trunkwidth)
     drawTree((int(screenwidth/2),screenheight-10),0,trunkheight,trunkwidth,0)
     if sway:
-        global swayleft, swayLnumb, swayright, swayRnumb
-        if swayL:
-            swayleft += swayLnumb
-            print(swayleft)
-            if swayleft>=-0.975 or swayleft<=-1:
-                swayLnumb=swayLnumb*-1
-        else:
-            
-            swayright += swayRnumb
-            print(swayright)
-            if swayright>=1 or swayright<=0.975:
-                swayRnumb=swayRnumb*-1
-        # else:
-        #     global swayright
-        #     swayright-=.001
+        s()
     if leaf:
         for x in leaves:
             x.drawLeaf()
@@ -147,8 +155,12 @@ def mouseMoved():
             x.startFall(mouseX,mouseY)
     if sway:
         global swayL
-        if mouseX>int(screenwidth/2):
-            swayL=True
-        else:
+        if mouseX<int(screenwidth/3):
             swayL=False
+        else:
+            if mouseX>2*int(screenwidth/3):
+                swayL=True
+            else:
+                
+                swayL = None
         
