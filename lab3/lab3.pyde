@@ -1,3 +1,10 @@
+"""
+pressing 's' would cause the tree to start swaying.
+pressing 'l' would display leaves
+pressing 'n' would display the nodes of the tree
+moving your mouse over the leaves would cause them to fall
+"""
+
 import sys
 import random
 import math
@@ -14,6 +21,7 @@ swayleft = -1 #default -1
 swayLnumb = .001
 swayright = 1 #default 1
 swayRnumb= -.001
+falling = []
 
 def setup():
     size(screenwidth, screenheight)
@@ -44,13 +52,17 @@ class l:
     def startFall(self,x,y):
         if math.hypot(self._location[0] - x, self._location[1] - y) <= 20:
             self._fall = True
+            return True
+        return False
     def stopFall(self):
         self._fall = False
     def fall(self):
-         if self._fall == True:
+        if self._fall == True:
             temp = list(self._location)
             temp[1]+=3
             self._location = tuple(temp)
+        if self._location[1]>screenheight:
+            del self
 
 def drawNodes(location):
     stroke(0, 0, 0)
@@ -109,6 +121,17 @@ def keyPressed():
     global leaf
     if key=="l":
         leaf = not leaf
+        print(leaf)
+        if leaf==False:
+            global leaves,falling
+            leaves = []
+            falling = []
+        else:
+            global set
+            set=True
+            # make sure it matches draw
+            drawTree((int(screenwidth/2),screenheight-10),0,trunkheight,trunkwidth,0)
+            set=False
     global nodes
     if key=="n":
         nodes = not nodes
@@ -149,10 +172,15 @@ def draw():
         for x in leaves:
             x.drawLeaf()
             x.fall()
+        for x in falling:
+            x.drawLeaf()
+            x.fall()
 def mouseMoved():
     if leaf:
         for x in leaves:
-            x.startFall(mouseX,mouseY)
+            if x.startFall(mouseX,mouseY):
+                falling.append(x)
+                leaves.remove(x)
     if sway:
         global swayL
         if mouseX<int(screenwidth/3):
