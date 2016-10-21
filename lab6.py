@@ -5,10 +5,16 @@ class PList:
             self._data=data
             self._prev=prev
             self._next=next
+    class Spooky:
+        def __init__(self):
+            self._boo = True
+        def no(self):
+            self._boo = False
     class Position:
         def __init__(self,plist,node):
             self._plist=plist
             self._node=node
+            self._v=plist._valid
         def data(self):
             return self._node._data
         def __eq__(self,other):
@@ -16,13 +22,13 @@ class PList:
         def __ne__(self,other):
             return not (self == other)
     def _validate(self,p):
-        if not isinstance(p,self.Position):
-            raise TypeError("p must be proper Position type")
-        if p._plist is not self:
-            raise ValueError('p does not belong to this PList')
-        if p._node._next is None:
-            raise ValueError('p is no longer valid')
-        return p._node
+            if not isinstance(p,self.Position):
+                raise TypeError("p must be proper Position type")
+            if p._plist is not self:
+                raise ValueError('p does not belong to this PList')
+            if p._node._next is None or not p._v._boo:
+                raise ValueError('p is no longer valid')
+            return p._node
     def _make_position(self,node):
         if node is self._head or node is self._tail:
             return None
@@ -31,15 +37,13 @@ class PList:
     def __init__(self):
         self._head=self._Node(None,None,None)
         self._head._next=self._tail=self._Node(None,self._head,None)
+        self._valid = self.Spooky()
     def __len__(self):
         s = self._head._next
         r = 0
-        # print("first: " + str(s._data))
         while s._next != None:
             r+=1
             s=s._next
-        #     print(s._data)
-        # print("return: " + str(r))
         return r
     def is_empty(self):
         return len(self)==0
@@ -81,7 +85,7 @@ class PList:
         node._prev=node._next=node._data=None
         return data
     def replace(self,p,data):
-        node=self._valdiate(p)
+        node=self._validate(p)
         olddata=node._data
         node._data=data
         return olddata
@@ -97,6 +101,7 @@ class PList:
         other._tail._prev = other._head
         other._head._next = other._tail
         self._tail._prev._next = self._tail
+        other._invalidate_positions()
         return self
     def split_after(self,p):
         r = PList()
@@ -107,6 +112,7 @@ class PList:
         r._tail._prev = self._tail._prev
         self._tail._prev = p._node
         r._head._next = start
+        self._invalidate_positions()
         return r
     def split_before(self,p):
         r = PList()
@@ -117,7 +123,11 @@ class PList:
         r._head._next = p._node
         self._tail._prev._next = r._tail
         self._tail._prev = end
+        self._invalidate_positions()
         return r
+    def _invalidate_positions(self):
+        self._valid.no()
+        self._valid=self.Spooky()
 
 
 #---------------CODE USED TO CHECK TESTS--------------------
@@ -155,9 +165,9 @@ def checkList(taskno,testno,yours,correctforward):
 To enable the test code for each task, change the booleans below. When you are
 working on one task you may want to disable the others.
 """
-testTask1=False
-testTask2=False
-testTask3=False
+testTask1=True
+testTask2=True
+testTask3=True
 testTask4=True
 testTask5=False
 
