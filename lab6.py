@@ -128,6 +128,8 @@ class PList:
     def _invalidate_positions(self):
         self._valid.no()
         self._valid=self.Spooky()
+    def flip(self):
+        
 
 
 #---------------CODE USED TO CHECK TESTS--------------------
