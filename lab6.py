@@ -42,15 +42,12 @@ class PList:
         self._last = None
         self._from_head = True
     def __len__(self):
-        # r=1
-        # x = self.first()
-        # try:
-        #     while self.after(x)!=None:
-        #         r+=1
-        #         x=self.after(x)
-        # except TypeError:
-        #     pass
-        # return r
+        l=0
+        p=self.first()
+        while p:
+            p=self.after(p)
+            l+=1
+        return l
     def is_empty(self):
         return len(self)==0
     def first(self):
@@ -93,7 +90,7 @@ class PList:
             if node._next != self._head:
                 return self._make_position(node._next)
         self._last.append(node)
-        if node._prev !=self._head:
+        if node._prev!=self._head:
             return self._make_position(node._prev)
         return
     def __iter__(self):
@@ -223,7 +220,7 @@ printList(v)
 y = PList()
 for x in range(5):
     y.add_last(x+10)
-print("original y: ")
+print("len y: " + str(len(y)))
 printList(y)
 print("v: ")
 # v.flip()
@@ -231,7 +228,6 @@ printList(v)
 print("y: ")
 y.flip()
 printList(y)
-print("bleh: " + str(len(v)+len(y)))
 v+=y
 print("BAAAAAAAAAAAAAH: " + str(len(v)))
 # printList(v)
