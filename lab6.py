@@ -23,6 +23,7 @@ class PList:
         def __ne__(self,other):
             return not (self == other)
     def _validate(self,p):
+            # print("debug: " + str(p._node._data))
             if not isinstance(p,self.Position):
                 raise TypeError("p must be proper Position type")
             if p._plist is not self:
@@ -70,7 +71,7 @@ class PList:
         if x == self._head:
             return None
         if self._from_head:
-            return x
+            return self._make_position(x)
         self._last.append(x)
         if node._prev == x:
             self._last.append(node)
@@ -83,7 +84,7 @@ class PList:
         if x == self._tail:
             return None
         if not self._from_head:
-            return x
+            return self._make_position(x)
         self._last.append(x)
         if node._prev == x:
             self._last.append(node)
@@ -97,7 +98,7 @@ class PList:
         pos = self.first()
         # x=1
         while pos:
-            print(pos.data())
+            # print(pos.data())
             yield pos.data()
             # print(x)
             pos=self.after(pos)
@@ -162,9 +163,9 @@ class PList:
         else:
             if other.is_flip():
                 self.last()._node._next = other.first()._node
-                other.first()._node._prev = self.last()._node
+                other.first()._node._next = self.last()._node
                 self._tail._prev = other.last()._node
-                other.last()._node._next = self._tail
+                other.last()._node._prev = self._tail
                 other._tail._next = other._head
                 other._head._prev = other._tail
             else:
@@ -178,13 +179,19 @@ class PList:
         return self
     def split_after(self,p):
         r = PList()
-        start = p._node._next
-        start._prev = r._head
+        start = self.after(p)
+        r._tail._prev = self.last()._node
+        p._node._prev = self.before(p)._node
         p._node._next = self._tail
-        self._tail._prev._next = r._tail
-        r._tail._prev = self._tail._prev
-        self._tail._prev = p._node
-        r._head._next = start
+        start._node._prev = r._head
+        r._head._next = start._node
+        start._node._next = self.after(start)._node
+        self.last()._node._prev = self.before(self.last())._node
+        self.last()._node._next = r._tail
+        if self._head._next != None:
+            self._tail._prev = p._node
+        else:
+            self._tail._next = p._node
         self._invalidate_positions()
         return r
     def split_before(self,p):
@@ -226,10 +233,15 @@ print("v: ")
 # v.flip()
 printList(v)
 print("y: ")
-y.flip()
+# y.flip()
 printList(y)
 v+=y
-print("BAAAAAAAAAAAAAH: " + str(len(v)))
+print("v after add: " + str(len(v)))
+printList(v)
+printList(y)
+x = v.before(v.after(v.after(v.first())))
+print(x._node._data)
+printList(v.split_after(x))
 # printList(v)
 """
 v.flip()
