@@ -1,3 +1,6 @@
+"""
+Problems/Issues: After and before are whack. Not robust. Needs to be fixed
+"""
 import collections
 class PList:
     class _Node:
@@ -75,9 +78,12 @@ class PList:
         self._last.append(x)
         if node._prev == x:
             self._last.append(node)
-            return self._make_position(node._next)
+            if node._next != self._tail:
+                return self._make_position(node._next)
         self._last.append(node)
-        return self._make_position(node._prev)
+        if node._prev!=self._tail:
+            return self._make_position(node._prev)
+        return
     def after(self,p):
         node=self._validate(p)
         x = self._last.pop()
@@ -96,11 +102,11 @@ class PList:
         return
     def __iter__(self):
         pos = self.first()
-        # x=1000
+        # x=1
         while pos:
-            print(pos.data())
-            yield pos.data()
             # print(x)
+            # print(pos.data())
+            yield pos.data()
             pos=self.after(pos)
             # x+=1
     def _insert_after(self,data,node):
@@ -198,26 +204,7 @@ class PList:
         self._invalidate_positions()
         return r
     def split_before(self,p):
-        # p = self.before(p)
         return self.split_after(self.before(p))
-        # r = PList()
-        # end = self.before(p)
-        # c = self.before(end)._node
-        # self.last()._node._prev = self.before(self.last())._node
-        # self.last()._node._next = r._tail
-        # r._tail._prev = self.last()._node
-        # end._node._prev = c
-        # end._node._next = self._tail
-        # if self._tail._prev != None:
-        #     self._tail._prev = end._node
-        # else:
-        #     self._tail._next = end._node
-        # p._node._next = self.after(p)._node
-        # p._node._prev = r._head
-        # r._head._next = p._node
-        # self._invalidate_positions()
-        # return r
-
     def _invalidate_positions(self):
         self._valid.no()
         self._valid=self.Spooky()
@@ -232,220 +219,191 @@ def printList(L):
     print(" ",list(L))
     # print(" Backward:",list(L.rev_itr()))
 
-v = PList()
-for x in range(5):
-    v.add_first(x)
-print("len v: " + str(len(v)))
-printList(v)
-y = PList()
-for x in range(5):
-    y.add_last(x+10)
-print("len y: " + str(len(y)))
-printList(y)
-print("v: ")
-# v.flip()
-printList(v)
-print("y: ")
-# y.flip()
-printList(y)
-v+=y
-print("v after add: " + str(len(v)))
-printList(v)
-printList(y)
-x = v.before(v.after(v.after(v.after(v.after(v.first())))))
-# print(x._node._data)
-m = v.split_before(x)
-m.flip()
-# printList(m)
-# print("len of m: "  + str(len(m)))
-v.flip()
-printList(v)
-"""
-v.flip()
-v.add_last(10)
-v.flip()
-printList(v)
-"""
-# y.flip()
-# print("y after flip: ")
+# v = PList()
+# for x in range(3):
+#     v.add_first(x)
+# print("len v: " + str(len(v)))
+# printList(v)
+# y = PList()
+# for x in range(3):
+#     y.add_last(x+10)
+# print("len y: " + str(len(y)))
+# printList(y)
+# print("v: ")
+# # v.flip()
+# printList(v)
+# print("y: ")
+# # y.flip()
 # printList(y)
 # v+=y
-# print("after adding: ")
+# print("v after add: " + str(len(v)))
 # printList(v)
-# v.flip()
+# printList(y)
+# x = v.before(v.after(v.after(v.after(v.after(v.first())))))
+# print("x be like: " + str(x._node._data))
+# m = v.split_before(x)
+# # m.flip()
+# printList(m)
+# # print("len of m: "  + str(len(m)))
+# # v.flip()
 # printList(v)
+
+def checkAnswer(taskno,testno,yours,correct):
+    print("Task:",taskno," Test:",testno,end=" ")
+    if yours==correct:
+        print("Correct: ",yours)
+    else:
+        print("Wrong: ", yours," The correct answer is:")
+        print(correct)
+
+def checkList(taskno,testno,yours,correctforward):
+    print("Task:",taskno," Test:",testno,end=" ")
+    yoursforward=list(yours)
+    yoursbackward=list(yours.rev_itr())
+    correctbackward=correctforward.copy()
+    correctbackward.reverse()
+    if yoursforward==correctforward:
+        if yoursbackward==correctbackward:
+            print("Correct: ",yoursforward)
+        else:
+            print("Wrong! Your forward iterator is correct and gives ",
+                  yoursforward,
+                  " but your reverse iterator gives ",
+                  yoursbackward)
+    else:
+        print("Wrong. Your code gives ",yoursforward,
+              " but the correct answer is:",correctforward)
+#------------------------------------------------------
 """
-x = v.after(v.first())
-v.add_before(x,25)
-printList(v)
-x = v.after(v.after(v.first()))
-r = v.before(v.last())
-v.replace(x,100)
-v.replace(r,55)
-v.add_first(20)
-v.flip()
-v.add_last(11)
-printList(v)
+To enable the test code for each task, change the booleans below. When you are
+working on one task you may want to disable the others.
 """
-# v.flip()
-# printList(v)
-#
-# def checkAnswer(taskno,testno,yours,correct):
-#     print("Task:",taskno," Test:",testno,end=" ")
-#     if yours==correct:
-#         print("Correct: ",yours)
-#     else:
-#         print("Wrong: ", yours," The correct answer is:")
-#         print(correct)
-#
-# def checkList(taskno,testno,yours,correctforward):
-#     print("Task:",taskno," Test:",testno,end=" ")
-#     yoursforward=list(yours)
-#     yoursbackward=list(yours.rev_itr())
-#     correctbackward=correctforward.copy()
-#     correctbackward.reverse()
-#     if yoursforward==correctforward:
-#         if yoursbackward==correctbackward:
-#             print("Correct: ",yoursforward)
-#         else:
-#             print("Wrong! Your forward iterator is correct and gives ",
-#                   yoursforward,
-#                   " but your reverse iterator gives ",
-#                   yoursbackward)
-#     else:
-#         print("Wrong. Your code gives ",yoursforward,
-#               " but the correct answer is:",correctforward)
-# #------------------------------------------------------
-# """
-# To enable the test code for each task, change the booleans below. When you are
-# working on one task you may want to disable the others.
-# """
-# testTask1=True
-# testTask2=True
-# testTask3=True
-# testTask4=True
-# testTask5=False
-#
-#
-# #------------------------TASK 1-----------------------
-# if (testTask1):
-#     print("\n------TASK 1------")
-#     L=PList()
-#     for i in range(5):
-#         L.add_first(i)
-#     printList(L) #Demo of the printList function, you may want to use to debug
-#     checkAnswer(1,1,len(L),5)
-#     checkAnswer(1,2,L.is_empty(),False)
-#     checkAnswer(1,3,len(PList()),0)
-#     checkAnswer(1,4,PList().is_empty(),True)
-#
-# #------------------------TASK 2-----------------------
-# if (testTask2):
-#     print("\n------TASK 2------")
-#     L=PList()
-#     for i in range(5):
-#         L.add_first(i)
-#     L2=PList()
-#     for i in ("a","b","c","d","e"):
-#         L2.add_first(i)
-#     L+=L2
-#     checkList(2,1,L,[4, 3, 2, 1, 0, 'e', 'd', 'c', 'b', 'a'])
-#     checkList(2,2,L2,[])
-# #------------------------TASK 3-----------------------
-# if (testTask3):
-#     print("\n------TASK 3------")
-#     L=PList()
-#     for i in [1,2,"a","b"]:
-#         L.add_last(i)
-#     L2=L.split_after(L.after(L.first()))
-#     checkList(3,1,L,[1,2])
-#     checkList(3,2,L2,['a','b'])
-#     L3=L2.split_before(L2.last())
-#     checkList(3,3,L2,['a'])
-#     checkList(3,4,L3,['b'])
-#     L4=L3.split_before(L3.first())
-#     checkList(3,5,L3,[])
-#     checkList(3,6,L4,['b'])
-#
-#
-# #------------------------TASK 4-----------------------
-# if (testTask4):
-#     print("\n------TASK 4------")
-#     L=PList()
-#     for i in range(5):
-#         L.add_first(i)
-#     p=L.last()
-#     L2=L.split_before(L.before(p))
-#     try:
-#         q=L.before(p)
-#     except ValueError:
-#         print("Task: 4 Test:1 Correctly has an exception")
-#     else:
-#         print("Task: 4 Test:1 Wrong! No exception")
-#     try:
-#         q=L2.before(p)
-#     except ValueError:
-#         print("Task: 4 Test:2 Correctly has an exception")
-#     else:
-#         print("Task: 4 Test:2 Wrong! No exception")
-#     p=L.first()
-#     p2=L2.first()
-#     try:
-#         p=L.after(p)
-#         p2=L2.after(p2)
-#         L+=L2
-#         p=L.before(p)
-#     except ValueError:
-#         print("Task: 4 Test:3 Wrong! There should be no exception")
-#     else:
-#         print("Task: 4 Test:3 Correct, no exception")
-#     try:
-#         p2=L2.before(p2)
-#     except ValueError:
-#         print("Task: 4 Test:4 Correctly has an exception")
-#     else:
-#         print("Task: 4 Test:4 Wrong! No exception")
-#
-#
-# #------------------------TASK 5-----------------------
-# if (testTask5):
-#     print("\n------TASK 5------")
-#     L=PList()
-#     for i in range(5):
-#         L.add_first(i)
-#
-# #checking the basic flip operation
-#     L.flip()
-#     checkList(5,1,L, [0, 1, 2, 3, 4])
-#     L2=PList()
-#     for i in ("a","b","c","d","e"):
-#         L2.add_first(i)
-# #checking the += works with flip
-#     L+=L2
-#     checkList(5,2,L,[0, 1, 2, 3, 4, 'e', 'd', 'c', 'b', 'a'])
-#     checkList(5,3,L2,[])
-#
-# #checking that split works with flip
-#     L=PList()
-#     for i in [1,2,"a","b"]:
-#         L.add_last(i)
-#     L.flip()
-#     L2=L.split_after(L.after(L.first()))
-#     checkList(5,4,L2,[2,1])
-#     checkList(5,5,L,['b','a'])
-#     L3=L2.split_before(L2.last())
-#     L.flip()
-#     checkList(5,6,L2,[2])
-#     checkList(5,7,L3,[1])
-#     L4=L3.split_before(L3.first())
-#     checkList(5,8,L3,[])
-#     checkList(5,9,L4,[1])
-#
-# #checking the positions move in the right direction always
-#     L=PList()
-#     for i in range(5):
-#         L.add_last(i)
-#     p=L.after(L.first())
-#     checkAnswer(5,10,(L.before(p).data(),L.after(p).data()),(0,2))
-#     L.flip()
-#     checkAnswer(5,11,(L.before(p).data(),L.after(p).data()),(2,0))
+testTask1=True
+testTask2=True
+testTask3=False
+testTask4=True
+testTask5=True
+
+
+#------------------------TASK 1-----------------------
+if (testTask1):
+    print("\n------TASK 1------")
+    L=PList()
+    for i in range(5):
+        L.add_first(i)
+    printList(L) #Demo of the printList function, you may want to use to debug
+    checkAnswer(1,1,len(L),5)
+    checkAnswer(1,2,L.is_empty(),False)
+    checkAnswer(1,3,len(PList()),0)
+    checkAnswer(1,4,PList().is_empty(),True)
+
+#------------------------TASK 2-----------------------
+if (testTask2):
+    print("\n------TASK 2------")
+    L=PList()
+    for i in range(5):
+        L.add_first(i)
+    L2=PList()
+    for i in ("a","b","c","d","e"):
+        L2.add_first(i)
+    L+=L2
+    checkList(2,1,L,[4, 3, 2, 1, 0, 'e', 'd', 'c', 'b', 'a'])
+    checkList(2,2,L2,[])
+#------------------------TASK 3-----------------------
+if (testTask3):
+    print("\n------TASK 3------")
+    L=PList()
+    for i in [1,2,"a","b"]:
+        L.add_last(i)
+    L2=L.split_after(L.after(L.first()))
+    checkList(3,1,L,[1,2])
+    checkList(3,2,L2,['a','b'])
+    L3=L2.split_before(L2.last())
+    checkList(3,3,L2,['a'])
+    checkList(3,4,L3,['b'])
+    L4=L3.split_before(L3.first())
+    checkList(3,5,L3,[])
+    checkList(3,6,L4,['b'])
+
+
+#------------------------TASK 4-----------------------
+if (testTask4):
+    print("\n------TASK 4------")
+    L=PList()
+    for i in range(5):
+        L.add_first(i)
+    p=L.last()
+    L2=L.split_before(L.before(p))
+    try:
+        q=L.before(p)
+    except ValueError:
+        print("Task: 4 Test:1 Correctly has an exception")
+    else:
+        print("Task: 4 Test:1 Wrong! No exception")
+    try:
+        q=L2.before(p)
+    except ValueError:
+        print("Task: 4 Test:2 Correctly has an exception")
+    else:
+        print("Task: 4 Test:2 Wrong! No exception")
+    p=L.first()
+    p2=L2.first()
+    try:
+        p=L.after(p)
+        p2=L2.after(p2)
+        L+=L2
+        p=L.before(p)
+    except ValueError:
+        print("Task: 4 Test:3 Wrong! There should be no exception")
+    else:
+        print("Task: 4 Test:3 Correct, no exception")
+    try:
+        p2=L2.before(p2)
+    except ValueError:
+        print("Task: 4 Test:4 Correctly has an exception")
+    else:
+        print("Task: 4 Test:4 Wrong! No exception")
+
+
+#------------------------TASK 5-----------------------
+if (testTask5):
+    print("\n------TASK 5------")
+    L=PList()
+    for i in range(5):
+        L.add_first(i)
+
+#checking the basic flip operation
+    L.flip()
+    checkList(5,1,L, [0, 1, 2, 3, 4])
+    L2=PList()
+    for i in ("a","b","c","d","e"):
+        L2.add_first(i)
+#checking the += works with flip
+    L+=L2
+    checkList(5,2,L,[0, 1, 2, 3, 4, 'e', 'd', 'c', 'b', 'a'])
+    checkList(5,3,L2,[])
+
+#checking that split works with flip
+    L=PList()
+    for i in [1,2,"a","b"]:
+        L.add_last(i)
+    L.flip()
+    L2=L.split_after(L.after(L.first()))
+    checkList(5,4,L2,[2,1])
+    checkList(5,5,L,['b','a'])
+    L3=L2.split_before(L2.last())
+    L.flip()
+    checkList(5,6,L2,[2])
+    checkList(5,7,L3,[1])
+    L4=L3.split_before(L3.first())
+    checkList(5,8,L3,[])
+    checkList(5,9,L4,[1])
+
+#checking the positions move in the right direction always
+    L=PList()
+    for i in range(5):
+        L.add_last(i)
+    p=L.after(L.first())
+    checkAnswer(5,10,(L.before(p).data(),L.after(p).data()),(0,2))
+    L.flip()
+    checkAnswer(5,11,(L.before(p).data(),L.after(p).data()),(2,0))
