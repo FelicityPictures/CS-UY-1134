@@ -96,9 +96,9 @@ class PList:
         return
     def __iter__(self):
         pos = self.first()
-        # x=1
+        # x=1000
         while pos:
-            # print(pos.data())
+            print(pos.data())
             yield pos.data()
             # print(x)
             pos=self.after(pos)
@@ -180,31 +180,44 @@ class PList:
     def split_after(self,p):
         r = PList()
         start = self.after(p)
+        c = self.after(start)._node
+        d = self.before(p)._node
+        # print("start: " + str(start._node._data))
         r._tail._prev = self.last()._node
-        p._node._prev = self.before(p)._node
-        p._node._next = self._tail
-        start._node._prev = r._head
-        r._head._next = start._node
-        start._node._next = self.after(start)._node
-        self.last()._node._prev = self.before(self.last())._node
         self.last()._node._next = r._tail
-        if self._head._next != None:
+        self.last()._node._prev = self.before(self.last())._node
+        if self._tail._prev != None:
             self._tail._prev = p._node
         else:
             self._tail._next = p._node
+        p._node._prev = d
+        p._node._next = self._tail
+        start._node._next = c
+        start._node._prev = r._head
+        r._head._next = start._node
         self._invalidate_positions()
         return r
     def split_before(self,p):
-        r = PList()
-        end = p._node._prev
-        end._next = self._tail
-        p._node._prev = r._head
-        r._tail._prev = self._tail._prev
-        r._head._next = p._node
-        self._tail._prev._next = r._tail
-        self._tail._prev = end
-        self._invalidate_positions()
-        return r
+        # p = self.before(p)
+        return self.split_after(self.before(p))
+        # r = PList()
+        # end = self.before(p)
+        # c = self.before(end)._node
+        # self.last()._node._prev = self.before(self.last())._node
+        # self.last()._node._next = r._tail
+        # r._tail._prev = self.last()._node
+        # end._node._prev = c
+        # end._node._next = self._tail
+        # if self._tail._prev != None:
+        #     self._tail._prev = end._node
+        # else:
+        #     self._tail._next = end._node
+        # p._node._next = self.after(p)._node
+        # p._node._prev = r._head
+        # r._head._next = p._node
+        # self._invalidate_positions()
+        # return r
+
     def _invalidate_positions(self):
         self._valid.no()
         self._valid=self.Spooky()
@@ -239,10 +252,14 @@ v+=y
 print("v after add: " + str(len(v)))
 printList(v)
 printList(y)
-x = v.before(v.after(v.after(v.first())))
-print(x._node._data)
-printList(v.split_after(x))
-# printList(v)
+x = v.before(v.after(v.after(v.after(v.after(v.first())))))
+# print(x._node._data)
+m = v.split_before(x)
+m.flip()
+# printList(m)
+# print("len of m: "  + str(len(m)))
+v.flip()
+printList(v)
 """
 v.flip()
 v.add_last(10)
