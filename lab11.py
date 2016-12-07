@@ -15,15 +15,15 @@ def select(arr,k,lim=5):
     # print(s)
     # print(l)
 
-    if k==len(l):
+    if k==len(s):
         return median
     else:
-        if k<len(l)+1:
+        if k<len(s):
             # print("l")
-            return select(l,k)
+            return select(s,k)
         else:
             # print('s')
-            return select(s,k-len(l)-1)
+            return select(l,k-len(s)-1)
 
 
 import math
@@ -105,4 +105,4 @@ def plotFunctionTimes(functions,colors,xr,maxy,repeat=1):
             random.shuffle(A)
             turt.goto(n,timeFunction(f,(A, 0,lk),repeat)/maxy)
 
-plotFunctionTimes([select,select],["red",'black'],range(1,1000,5),.01,repeat=10)
+# plotFunctionTimes([select,select],["red",'black'],range(1,1000,5),.01,repeat=10)
