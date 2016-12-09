@@ -44,6 +44,16 @@ def selecth(arr,k,lim,start,end):
 def s(arr,start,end): #does not include end
     if end>len(arr):
         end = len(arr)
+    """bubble"""
+    # if start+1<end:
+    #     for x in range(end-start):
+    #         curr = 0
+    #         while curr<end-x-1:
+    #             # print('curr'+ str(curr))
+    #             if arr[curr]>arr[curr+1]:
+    #                 arr[curr],arr[curr+1]=arr[curr+1],arr[curr]
+    #             curr+=1
+    """insertion"""
     for m in range(end-start-1):
         if arr[start+m]>arr[start+m+1]:
             arr[start+m],arr[start+m+1]=arr[start+m+1],arr[start+m]
@@ -51,6 +61,7 @@ def s(arr,start,end): #does not include end
             if arr[start+m-x]<arr[start+m-x-1]:
                 arr[start+m-x],arr[start+m-x-1]=arr[start+m-x-1],arr[start+m-x]
     return arr
+
 
 def MoM(arr,lim,start,end):
     if end-start<2:
@@ -80,6 +91,9 @@ def getMedian(arr,start,end): #Does not look at arr[end]
 
 A=list(range(21))
 random.shuffle(A)
+# print(A)
+# s(A,0,len(A))
+# print(A)
 # print(select(A,20))
 # for x in range(100):
 #     print([select(A,i) for i in range(21)])
@@ -120,4 +134,4 @@ def plotFunctionTimes(functions,colors,xr,maxy,repeat=1):
             random.shuffle(A)
             turt.goto(n,timeFunction(f,(A, 0,lk),repeat)/maxy)
 
-plotFunctionTimes([select,select],["red",'black'],range(1,1000,5),.01,repeat=10)
+plotFunctionTimes([select,select],["red",'black'],range(1,1000,5),.1,repeat=10)
