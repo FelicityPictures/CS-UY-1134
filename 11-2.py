@@ -8,40 +8,45 @@ def selecth(arr,k,lim,start,end):
         end = len(arr)
     median = MoM(arr,lim,start,end)
     if end-start>=2:
-        x = start+1
-        s = start+1
-        l = end-1
-        print(median)
-        print(arr)
-        while x<end and s<l:
-            if arr[x]<median[0]:
-                arr[s],arr[x]=arr[x],arr[s]
-                s+=1
-            if arr[x]>median[0]:
-                arr[l],arr[x]=arr[x],arr[l]
-                l-=1
-                x-=1
-            x+=1
-    if arr[s]>median[0]:
-        try:
-            if arr[s-1]<median[0]:
-                arr[median[1]],arr[s-1]=arr[s-1],arr[median[1]]
-                median=(median[0],s-1)
+        if end-start==2:
+            if median[0]>arr[start+1]:
+                arr[median[1]],arr[start+1]=arr[start+1],arr[median[1]]
+                median = (median[0],start+1)
+        else:
+            x = start+1
+            s = start+1
+            l = end-1
+            print(median)
+            print(arr)
+            while x<end and s<l:
+                if arr[x]<median[0]:
+                    arr[s],arr[x]=arr[x],arr[s]
+                    s+=1
+                if arr[x]>median[0]:
+                    arr[l],arr[x]=arr[x],arr[l]
+                    l-=1
+                    x-=1
+                x+=1
+            if arr[s]>median[0]:
+                try:
+                    if arr[s-1]<median[0]:
+                        arr[median[1]],arr[s-1]=arr[s-1],arr[median[1]]
+                        median=(median[0],s-1)
+                    else:
+                        arr[median[1]],arr[s-2]=arr[s-2],arr[median[1]]
+                        median=(median[0],s-2)
+                except IndexError:
+                    pass
             else:
-                arr[median[1]],arr[s-2]=arr[s-2],arr[median[1]]
-                median=(median[0],s-2)
-        except IndexError:
-            pass
-    else:
-        try:
-            if arr[s+1]>median[0]:
-                arr[median[1]],arr[s]=arr[s],arr[median[1]]
-                median=(median[0],s)
-            else:
-                arr[median[1]],arr[s+1]=arr[s+1],arr[median[1]]
-                median=(median[0],s+1)
-        except IndexError:
-            pass
+                try:
+                    if arr[s+1]>median[0]:
+                        arr[median[1]],arr[s]=arr[s],arr[median[1]]
+                        median=(median[0],s)
+                    else:
+                        arr[median[1]],arr[s+1]=arr[s+1],arr[median[1]]
+                        median=(median[0],s+1)
+                except IndexError:
+                    pass
         # if arr[s]<median[0] and arr[s+1]>median[0]:
         #     arr[start],arr[s]=arr[s],arr[start]
         #     median = (median[0],s) #medpt is index of array where the median is
@@ -116,5 +121,48 @@ def getMedian(arr,start,end): #Does not look at arr[end]
 
 A=list(range(24))
 random.shuffle(A)
-print(select(A,23))
+m=[]
+for x in range(50):
+    # print(select(A,23))
+    m.append(select(A,5))
+    random.shuffle(A)
+print(m)
 # print([select(A,i) for i in range(220)])
+
+import timeit
+def timeFunction(f,n,repeat=1):
+	return timeit.timeit(f.__name__+str(n), setup="from __main__ import "+f.__name__,number=repeat)/repeat
+
+def timeFunctionString(f,n,repeat=1):
+	return f.__name__ + ": " + str("{:4.6f}".format(timeit.timeit(f.__name__+str(n),
+                    setup="from __main__ import "+f.__name__,number=repeat)/repeat)) + "   "
+def printFunctionTimes(array,r):
+    for x in r:
+        print("n= " + str(x) + "   ",end='')
+        for m in array:
+            if array.index(m)==len(array)-1:
+                print(timeFunctionString(m,x))
+            else:
+                print(timeFunctionString(m,x),end='')
+import turtle
+def plotFunctionTimesSimple():
+    for n in range(1,300):
+        turtle.goto(n,timeFunction(select,n,100)*500000)
+
+#plotFunctionTimesSimple()
+
+def plotFunctionTimes(functions,colors,xr,maxy,repeat=1):
+    turtle.speed(0)
+    turtle.setworldcoordinates(0,0,xr[-1],1)
+    br = [5,200]
+    for f,c in zip(functions,colors):
+        turtles = [turtle.Turtle() for f in functions]
+    for x,c in zip(turtles,colors):
+        x.pencolor(c)
+    for n in xr:
+        for f,lk,turt in zip(functions,br,turtles):
+            A = list(range(n))
+            random.shuffle(A)
+            turt.goto(n,timeFunction(f,(A, 0,lk),repeat)/maxy)
+
+# plotFunctionTimes([select,select],["red",'black'],range(1,1000,5),.1,repeat=5)
