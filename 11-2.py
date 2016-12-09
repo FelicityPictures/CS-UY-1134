@@ -11,7 +11,8 @@ def selecth(arr,k,lim,start,end):
         x = start+1
         s = start+1
         l = end-1
-        # print(median)
+        print(median)
+        print(arr)
         while x<end and s<l:
             if arr[x]<median[0]:
                 arr[s],arr[x]=arr[x],arr[s]
@@ -21,26 +22,26 @@ def selecth(arr,k,lim,start,end):
                 l-=1
                 x-=1
             x+=1
-        if arr[s]>median[0]:
-            try:
-                if arr[s-1]<median[0]:
-                    arr[median[1]],arr[s-1]=arr[s-1],arr[median[1]]
-                    median=(median[0],s-1)
-                else:
-                    arr[median[1]],arr[s-2]=arr[s-2],arr[median[1]]
-                    median=(median[0],s-2)
-            except IndexError:
-                pass
-        else:
-            try:
-                if arr[s+1]>median[0]:
-                    arr[median[1]],arr[s]=arr[s],arr[median[1]]
-                    median=(median[0],s)
-                else:
-                    arr[median[1]],arr[s+1]=arr[s+1],arr[median[1]]
-                    median=(median[0],s+1)
-            except IndexError:
-                pass
+    if arr[s]>median[0]:
+        try:
+            if arr[s-1]<median[0]:
+                arr[median[1]],arr[s-1]=arr[s-1],arr[median[1]]
+                median=(median[0],s-1)
+            else:
+                arr[median[1]],arr[s-2]=arr[s-2],arr[median[1]]
+                median=(median[0],s-2)
+        except IndexError:
+            pass
+    else:
+        try:
+            if arr[s+1]>median[0]:
+                arr[median[1]],arr[s]=arr[s],arr[median[1]]
+                median=(median[0],s)
+            else:
+                arr[median[1]],arr[s+1]=arr[s+1],arr[median[1]]
+                median=(median[0],s+1)
+        except IndexError:
+            pass
         # if arr[s]<median[0] and arr[s+1]>median[0]:
         #     arr[start],arr[s]=arr[s],arr[start]
         #     median = (median[0],s) #medpt is index of array where the median is
@@ -49,10 +50,9 @@ def selecth(arr,k,lim,start,end):
         #         arr[start],arr[s-1]=arr[s-1],arr[start]
         #         median = (median[0],s-1)
     if k==median[1]:
-        # print('FINISHED')
-        # print(median)
-        # print(arr)
-        # print(k)
+        print(median)
+        print(arr)
+        print(k)
         return median[0]
     else:
         # print("median after moving stuff" + str(median))
@@ -85,8 +85,6 @@ def MoM(arr,lim,start,end):
     for begin in range(numparts):
         s(arr,start+(begin*lim),start+(begin*lim)+lim)
     for x in range(numparts):
-        # print(numparts)
-        # print("ERROR: " + str((start,end)) + ' '+ str(x) + ' ' + str(start+(x*lim)+(lim//2)))
         if start+(x*lim)+(lim//2)>=end:
             arr[start+x],arr[start+(x*lim)+((end-(start+(x*lim)))//2)]=arr[start+(x*lim)+((end-(start+(x*lim)))//2)],arr[start+x]
         else:
@@ -97,8 +95,6 @@ def getMedian(arr,start,end): #Does not look at arr[end]
     # print("start,end " + str((start,end)))
     # print("from this: " +str(arr))
     if end-start-1<=2:
-        # print('hello')
-        # print(str((arr[start],start)))
         return (arr[start],start)
     else:
         for x in range(end-start):
@@ -118,7 +114,7 @@ def getMedian(arr,start,end): #Does not look at arr[end]
 # # print(s(f,0,100))
 
 
-A=list(range(222))
+A=list(range(24))
 random.shuffle(A)
-print(select(A,5))
-print([select(A,i) for i in range(220)])
+print(select(A,23))
+# print([select(A,i) for i in range(220)])
