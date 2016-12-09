@@ -11,6 +11,7 @@ class suffixTrie:
                 if string[m] not in curr._children:
                     curr._children[string[m]]=self.Node()
                 curr = curr._children[string[m]]
+            # curr._children['$'] = self.Node()
                 
             # hold = string[:1]
             string = string[1:]
@@ -84,5 +85,5 @@ def setup():
 def draw():
     background(200,150,200)
     TextBox(S,10,10).draw()
-    ST=suffixTrie(S)
+    ST=suffixTrie(S+'$')
     ST.draw(50,100)
