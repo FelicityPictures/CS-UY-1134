@@ -2,12 +2,13 @@ def select(arr,k,lim=5):
     return selecth(arr,k,lim,0,len(arr))
 
 def selecth(arr,k,lim,start,end):
-    median = MoM(arr,lim)
-
-    x = 1
-    s = 1
-    l = len(arr)-1
-    while x<len(arr) and s<l:
+    if end>len(arr):
+        end = len(arr)
+    median = MoM(arr,lim,start,end)
+    x = start+1
+    s = start+1
+    l = end-1
+    while x<end and s<l:
         if arr[x]<median:
             arr[s],arr[x]=arr[x],arr[s]
             s+=1
@@ -17,34 +18,37 @@ def selecth(arr,k,lim,start,end):
             x-=1
         x+=1
     if arr[s]<median:
-        arr[0],arr[s]=arr[s],arr[0]
-        medpt = s
+        arr[start],arr[s]=arr[s],arr[start]
+        medpt = s #medpt is index of array where the median is
     else:
-        arr[0],arr[s-1]=arr[s-1],arr[0]
+        arr[start],arr[s-1]=arr[s-1],arr[start]
         medpt = s-1
-
-    # print(median)
-    # print(s)
-    # print(l)
-    # print("after: " +str(arr))
-        # if x == median:
-        #     pass
-        # elif x<median:
-        #     s.append(x)
-        # else:
-        #     l.append(x)
-
-    # print(s)
-    # print(l)
+    # print(arr[start:end])
     if k==medpt:
         return median
     else:
+        print(median)
+        print(arr)
         if k<medpt:
-            # print("l")
-            return select(s,k)
+            print("s")
+            return selecth(arr,k,lim,start,medpt)
         else:
-            # print('s')
-            return select(l,k-medpt-1)
+            print('l')
+            return selecth(arr,k-medpt-1,lim,medpt+1,end)
+
+            # print(median)
+            # print(s)
+            # print(l)
+            # print("after: " +str(arr))
+            # if x == median:
+            #     pass
+            # elif x<median:
+            #     s.append(x)
+            # else:
+            #     l.append(x)
+
+            # print(s)
+            # print(l)
 
 import math
 
@@ -63,13 +67,14 @@ def s(arr,start,end): #does not include end
                 # print(arr)
     return arr
 
-
-
-def MoM(arr,lim=5):
-    numparts = math.ceil(len(arr) / lim)
+def MoM(arr,lim,start,end):
+    numparts = math.ceil((end-start) / lim)
     # total = []
     for begin in range(numparts):
-        s(arr,begin*lim,begin*lim+lim)
+        s(arr,start+(begin*lim),start+(begin*lim+lim))
+    for x in range(numparts):
+        arr[start+x],arr[start+(x*lim+(lim//2))]=arr[start+(x*lim+(lim//2))],arr[start+x]
+    return getMedian(arr,start,start+numparts)
         # print(s(arr,begin*lim,begin+lim))
     #     total.append( [arr[ (partnum * lim) + i] for i in range(lim) if (partnum * lim) + i < len(arr)] )
 
@@ -80,8 +85,8 @@ def MoM(arr,lim=5):
     # medians = []
     # for part in total:
     #     medians.append(part[(len(part)- 1) // 2])
-    for x in range(numparts):
-        arr[x],arr[x*lim+(lim//2)]=arr[x*lim+(lim//2)],arr[x]
+        # print("just " + str(start+x))
+        # print(start+(x*lim+(lim//2)))
 
         # print(total[i])
         # print(len(total[i])//2)
@@ -90,39 +95,40 @@ def MoM(arr,lim=5):
     # print (medians)
     # print("total sorted: " + str(total))
     # medians = [x[len(x)//2] for x in total]
-    return getMedian(arr,0,numparts)
 
 def getMedian(arr,start,end): #Does not look at arr[end]
     # print(A)
     if end-start<= 2:
-        arr[0],arr[start]=arr[start],arr[0]
-        return arr[0]
+        # arr[0],arr[start]=arr[start],arr[0]
+        return arr[start]
     else:
+        for x in range(end):
+            if arr[start+x]<arr[start]:
+                arr[start],arr[start+x]=arr[start+x],arr[start]
+            if arr[start+x]>arr[end]:
+                arr[end],arr[start+x]=arr[start+x],arr[end]
+    return getMedian(arr,start+1,end-1)
         # max = min = (0, arr[0])
         # for count, el in enumerate(A):
             # if el < min[1]:
             #     min = (count, el)
             # elif el > max[1]:
             #     max = (count, el)
-        for x in range(end):
-            if arr[x]<arr[start]:
-                arr[start],arr[x]=arr[x],arr[start]
-            if arr[x]>arr[end]:
-                arr[end],arr[x]=arr[x],arr[end]
-    return getMedian(arr,start+1,end-1)
+
 
 
 import random
 f = list(range(20))
 random.shuffle(f)
+print("original: " + str(f))
 # print(s(felicity,2,20))
-print(f)
-print(select(f,1))
-print(s(f,0,100))
+# print(f)
+print([select(f,i) for i in range(len(f))])
+# print(s(f,0,100))
 
 # A=list(range(222))
 # random.shuffle(A)
-# print(select(A,5))s
+# print(select(A,5))
 # print([select(A,i) for i in range(220)])
 
 import timeit
