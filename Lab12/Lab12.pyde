@@ -4,7 +4,6 @@ class suffixTrie:
             self._children={}
     def __init__(self,string):
         self._root = self.Node()
-        # hold = ''
         while len(string)>0:
             curr=self._root
             for m in range(len(string)):
@@ -12,8 +11,7 @@ class suffixTrie:
                     curr._children[string[m]]=self.Node()
                 curr = curr._children[string[m]]
             # curr._children['$'] = self.Node()
-                
-            # hold = string[:1]
+            
             string = string[1:]
     def draw(self,x,y):
         print('new')
@@ -21,12 +19,16 @@ class suffixTrie:
         self._helperD(b,self._root,x,y)
     
     def _helperD(self,before,node,x,y):
+        difx=0
         for object in node._children:
-            txt = TextBox(object,x,y+60)
+            txt = TextBox(object,x+difx+5,y+60)
             txt.draw()
+            # before.setLocation(before._x+difx,before._y)
             before.drawLineToOtherBoxBelow(txt)
-            self._helperD(txt,node._children[object],x,y+60)
-            x+=50
+            self._helperD(txt,node._children[object],x+difx+10,y+60)
+            x=x+(50*len(node._children[object]._children))
+            
+            difx+=20
             
 
 class TextBox:
