@@ -4,25 +4,22 @@ class suffixTrie:
             self._children={}
     def __init__(self,string):
         self._root = self.Node()
-        for x in range(len(string)):
+        # hold = ''
+        while len(string)>0:
             curr=self._root
-            for m in range(len(string)-x):
-                # try:
-                    curr._children[string[x+m]]=self.Node()
-                    curr = curr._children[string[x+m]]
+            for m in range(len(string)):
+                if string[m] not in curr._children:
+                    curr._children[string[m]]=self.Node()
+                curr = curr._children[string[m]]
+                
+            # hold = string[:1]
+            string = string[1:]
     def draw(self,x,y):
-        # r = TextBox(self._root._data,x,y)
-        # r.draw()
         print('new')
         b = TextBox(' ',x,y)
         self._helperD(b,self._root,x,y)
     
     def _helperD(self,before,node,x,y):
-        # global xdistance
-        # one = TextBox(str(self._s[node._data]),x,y)
-        # one.setLocation(x-int(one.width()/2),y)
-        # one.draw()
-        
         for object in node._children:
             txt = TextBox(object,x,y+60)
             txt.draw()
