@@ -14,7 +14,7 @@ class suffixTrie:
         # r = TextBox(self._root._data,x,y)
         # r.draw()
         print('new')
-        b = TextBox('',x,y)
+        b = TextBox(' ',x,y)
         self._helperD(b,self._root,x,y)
     
     def _helperD(self,before,node,x,y):
@@ -36,6 +36,7 @@ class TextBox:
 
     def __init__(self, text, x=0, y=0):
         self._text, self._x, self._y = text, x, y
+        print(len(text))
 
     def replaceText(self, text):
         self._text = text
