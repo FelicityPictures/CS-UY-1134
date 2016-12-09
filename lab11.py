@@ -4,12 +4,9 @@ def select(arr,k,lim=5):
     return selecth(arr,k,lim,0,len(arr))
 
 def selecth(arr,k,lim,start,end):
-    # print(start,end)
     if end>len(arr):
         end = len(arr)
     median = MoM(arr,lim,start,end) #(value of median,index)
-    # print('median' + str(median))
-    # print(arr)
 
     if end-start>=2:
         if end-start==2:
@@ -19,9 +16,6 @@ def selecth(arr,k,lim,start,end):
         else:
             x = median[1]+1
             l = end-1
-            # print('xl'+str((x,l)))
-            # print(median)
-            # print(arr)
             while x<l:
                 if arr[x]>median[0]:
                     arr[l],arr[x]=arr[x],arr[l]
@@ -40,21 +34,11 @@ def selecth(arr,k,lim,start,end):
                     median = (median[0],l)
 
     if k==median[1]:
-        # print(median)
-        # print(arr)
-        # print(k)
         return median[0]
     else:
-        # print("median after moving stuff" + str(median))
-        # print(arr)
-        # print('k: ' + str(k))
-        # print('median: ' + str(median))
         if k<median[1]:
-            # print("s")
             return selecth(arr,k,lim,start,median[1])
         else:
-            # print('l')
-            # print((median[1]+1,end))
             return selecth(arr,k,lim,median[1]+1,end)
 
 def s(arr,start,end): #does not include end
@@ -72,8 +56,8 @@ def MoM(arr,lim,start,end):
     if end-start<2:
         return (arr[start],start)
     numparts = math.ceil((end-start) / lim)
-    for begin in range(numparts):
-        s(arr,start+(begin*lim),start+(begin*lim)+lim)
+    for x in range(numparts):
+        s(arr,start+(x*lim),start+(x*lim)+lim)
     for x in range(numparts):
         if start+(x*lim)+(lim//2)>=end:
             arr[start+x],arr[start+(x*lim)+((end-(start+(x*lim)))//2)]=arr[start+(x*lim)+((end-(start+(x*lim)))//2)],arr[start+x]
@@ -82,8 +66,6 @@ def MoM(arr,lim,start,end):
     return getMedian(arr,start,start+numparts)
 
 def getMedian(arr,start,end): #Does not look at arr[end]
-    # print("start,end " + str((start,end)))
-    # print("from this: " +str(arr))
     if end-start-1<=2:
         return (arr[start],start)
     else:
@@ -98,7 +80,7 @@ def getMedian(arr,start,end): #Does not look at arr[end]
 
 A=list(range(21))
 random.shuffle(A)
-# print(select(A,21))
+# print(select(A,20))
 # for x in range(100):
 #     print([select(A,i) for i in range(21)])
 #     random.shuffle(A)
