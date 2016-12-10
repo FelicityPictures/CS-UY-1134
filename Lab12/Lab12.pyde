@@ -2,6 +2,18 @@ class suffixTrie:
     class Node:
         def __init__(self):
             self._children={}
+        def mcn(self,mc):
+            if len(self._children)==0:
+                return mc
+            elif len(self._children)==1:
+                for m in self._children:
+                    r = m
+                return self._children[r].mcn(mc)
+            else:
+                hold = []
+                for x,i in zip(self._children,range(len(self._children))):
+                    hold.append(self._children[x].mcn(mc+i))
+                return max(hold)
     def __init__(self,string):
         self._root = self.Node()
         while len(string)>0:
@@ -14,21 +26,19 @@ class suffixTrie:
             
             string = string[1:]
     def draw(self,x,y):
-        print('new')
-        b = TextBox(' ',x,y)
-        self._helperD(b,self._root,x,y,0)
-    
-    def _helperD(self,before,node,x,y,m):
-        difx=0
+        # print('new')
+        b = TextBox('_',x,y)
+        self._helperD(b,self._root,x,y)
+        
+    def _helperD(self,before,node,x,y): #m is max x coordinate
         for object in node._children:
-            txt = TextBox(object,x+difx+5,y+60)
+            print(node.mcn(0))
+            txt = TextBox(object,x,y+60)
             txt.draw()
-            # before.setLocation(before._x+difx,before._y)
             before.drawLineToOtherBoxBelow(txt)
-            self._helperD(txt,node._children[object],x+difx,y+60,m)
-            x=x+(50*len(node._children[object]._children))
-            difx+=20
-        #return farthest x
+            self._helperD(txt,node._children[object],x,y+60)
+            x=x+50+(50*node._children[object].mcn(0))
+            # print(x)
 
 class TextBox:
     TEXTSIZE = 30
