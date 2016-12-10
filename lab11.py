@@ -69,13 +69,21 @@ def MoM(arr,lim,start,end):
     numparts = math.ceil((end-start) / lim)
     for x in range(numparts):
         s(arr,start+(x*lim),start+(x*lim)+lim)
-    for x in range(numparts):
-        if start+(x*lim)+(lim//2)>=end:
-            arr[start+x],arr[start+(x*lim)+((end-(start+(x*lim)))//2)]=arr[start+(x*lim)+((end-(start+(x*lim)))//2)],arr[start+x]
-        else:
-            arr[start+x],arr[start+(x*lim)+(lim//2)]=arr[start+(x*lim)+(lim//2)],arr[start+x]
+    for x in range(numparts-1):
+        # difference = (start+(x*lim)+lim)-(start+(x*lim))
+        # if (start+(x*lim)+lim)-(start+(x*lim))<lim:
+        #     arr[start+x],arr[(start+(x*lim))+(difference//2)]=arr[(start+(x*lim))+(difference//2)],arr[start+x]
+        # else:
+        arr[start+x],arr[start+(x*lim)+(lim//2)]=arr[start+(x*lim)+(lim//2)],arr[start+x]
+    if (end-start)%numparts<lim and lim>0:
+        arr[start+numparts-1],arr[start+(lim*(numparts-1))+(((end-start)%numparts)//2)]=arr[start+(lim*(numparts-1))+(((end-start)%numparts)//2)],arr[start+numparts-1]
+    else:
+        arr[start+numpart-1],arr[start+((numpart-1)*lim)+(lim//2)]=arr[start+((numpart-1)*lim)+(lim//2)],arr[start+numpart-1]
     return getMedian(arr,start,start+numparts)
 
+
+    # for e in range(start ,end + lim, lim):
+    #     s(arr, e, e + groupsize if e + groupsize < end else end)
 def getMedian(arr,start,end): #Does not look at arr[end]
     if end-start-1<=2:
         return (arr[start],start)

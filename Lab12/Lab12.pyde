@@ -16,20 +16,19 @@ class suffixTrie:
     def draw(self,x,y):
         print('new')
         b = TextBox(' ',x,y)
-        self._helperD(b,self._root,x,y)
+        self._helperD(b,self._root,x,y,0)
     
-    def _helperD(self,before,node,x,y):
+    def _helperD(self,before,node,x,y,m):
         difx=0
         for object in node._children:
             txt = TextBox(object,x+difx+5,y+60)
             txt.draw()
             # before.setLocation(before._x+difx,before._y)
             before.drawLineToOtherBoxBelow(txt)
-            self._helperD(txt,node._children[object],x+difx+10,y+60)
+            self._helperD(txt,node._children[object],x+difx,y+60,m)
             x=x+(50*len(node._children[object]._children))
-            
             difx+=20
-            
+        #return farthest x
 
 class TextBox:
     TEXTSIZE = 30
