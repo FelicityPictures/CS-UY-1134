@@ -58,7 +58,7 @@ class suffixTrie:
         
     def _helperD(self,before,node,x,y): #m is max x coordinate
         for object in node._children:
-            print(node.mcn())
+            # print(node.mcn())
             txt = TextBox(object,x,y+60)
             txt.draw()
             before.drawLineToOtherBoxBelow(txt)
@@ -73,7 +73,21 @@ class compressedSuffixTrie(suffixTrie):
         for c in self._root._children:
             self._compress(self._root._children[c],self._root)
     def _compress(self,curr,before):
-        # print(curr)
+        if len(curr._children)==0:
+            return
+        else:
+            if len(curr._children)==1:
+                w = curr._children.keys()[0]
+                for x in before._children:
+                    if before._children[x]==curr:
+                        before._children[x+w]=curr._children[w]
+                        before._children.pop(x)
+                        self._compress(before._children[x+w],before)
+                        
+            else:
+                for x in curr._children:
+                    self._compress(curr._children[x],curr)
+        """
         if curr.straight():
             hold = ''
             for c in before._children:
@@ -84,6 +98,7 @@ class compressedSuffixTrie(suffixTrie):
         else:
             for c in curr._children:
                 self._compress(curr._children[c],curr)
+        """
 class TextBox:
     TEXTSIZE = 30
 
