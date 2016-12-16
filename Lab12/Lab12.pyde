@@ -15,17 +15,14 @@ class suffixTrie:
                     hold.append(self._children[x].mcn(mc+i))
                 return max(hold)
         def getEnd(self,node,ret=''):#only for nodes that don't branch
-            # print('bleh'+ str(len(self._children)))
             if len(self._children)<1:
                 return ret
             for m in self._children:
                 if self._children[m] == node:
                     return self._children[m]._getEndh(ret+str(m))
         def _getEndh(self,ret=''):#only for nodes that don't branch
-            # print('bleh'+ str(len(self._children)))
             if len(self._children)<1:
                 return ret
-            # x = ''
             for m in self._children:
                 # x=m
                 return self._children[m]._getEndh(ret+str(m))
@@ -37,10 +34,6 @@ class suffixTrie:
                     r = m
                 return self._children[r].straight()
             return False
-                # hold = []
-                # for x,i in zip(self._children,range(len(self._children))):
-                #     hold.append(self._children[x].mcn(mc+i))
-                # return min(hold)
     def __init__(self,string):
         self._root = self.Node()
         while len(string)>0:
@@ -53,18 +46,22 @@ class suffixTrie:
             string = string[1:]
     def draw(self,x,y):
         # print('new')
-        b = TextBox('_',x,y)
+        b = TextBox('',x,y)
         self._helperD(b,self._root,x,y)
         
     def _helperD(self,before,node,x,y): #m is max x coordinate
-        for object in node._children:
-            # print(node.mcn())
-            txt = TextBox(object,x,y+60)
-            txt.draw()
-            before.drawLineToOtherBoxBelow(txt)
-            self._helperD(txt,node._children[object],x,y+60)
-            x=x+50+(100*node._children[object].mcn(0))
-            # print(x)
+        if len(node._children)>0:
+            m=[]
+            for c in node._children:
+                txt = TextBox(c,x,y+60)
+                txt.draw()
+                before.drawLineToOtherBoxBelow(txt)
+                m.append(self._helperD(txt,node._children[c],x,y+60))
+                v = max(m)
+                x=v+5#(50*len(c))
+            return x
+        else:
+            return x+before.width()
 
 class compressedSuffixTrie(suffixTrie):
     def __init__(self,string):
@@ -87,18 +84,6 @@ class compressedSuffixTrie(suffixTrie):
             else:
                 for x in curr._children:
                     self._compress(curr._children[x],curr)
-        """
-        if curr.straight():
-            hold = ''
-            for c in before._children:
-                if before._children[c] == curr:
-                    hold = before.getEnd(before._children[c])
-                    before._children.pop(c)
-            before._children[hold]=self.Node()
-        else:
-            for c in curr._children:
-                self._compress(curr._children[c],curr)
-        """
 class TextBox:
     TEXTSIZE = 30
 
@@ -141,19 +126,28 @@ class TextBox:
 
 def keyPressed():
     global S
-    if key==u'\x08':
-        S=S[:-1]
-    elif key!=65535:
-        S+=key
+    print(key)
+    if key == '\t':
+        global compress
+        compress = not compress
+    else:
+        if key==u'\x08':
+            S=S[:-1]
+        elif key!=65535:
+            S+=key
     redraw()
 def setup():
-    global S
+    global S,compress
     S=""
-    size(1200, 1000)
+    compress = True
+    size(1500, 1000)
     pixelDensity(displayDensity())
     noLoop()
 def draw():
     background(200,150,200)
     TextBox(S,10,10).draw()
-    ST=compressedSuffixTrie(S+'$')
+    if compress:
+        ST=compressedSuffixTrie(S+'$')
+    else:
+        ST=suffixTrie(S+'$')
     ST.draw(50,100)
